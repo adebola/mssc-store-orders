@@ -1,0 +1,1 @@
+alter table `order_item` modify column `order_id` varchar(36) NOT NULL;
