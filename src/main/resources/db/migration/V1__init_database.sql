@@ -1,5 +1,5 @@
-drop table if exists `order`;
 drop table if exists `order_item`;
+drop table if exists `order`;
 
 create table `order` (
                          id varchar(36) not null,
