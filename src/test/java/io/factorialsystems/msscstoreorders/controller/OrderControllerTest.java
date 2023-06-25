@@ -3,7 +3,6 @@ package io.factorialsystems.msscstoreorders.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.factorialsystems.msscstoreorders.dto.OrderDTO;
 import io.factorialsystems.msscstoreorders.dto.OrderItemDTO;
-import io.factorialsystems.msscstoreorders.dto.PagedDTO;
 import io.factorialsystems.msscstoreorders.entity.OrderStatus;
 import io.factorialsystems.msscstoreorders.service.OrderService;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -50,8 +51,7 @@ class OrderControllerTest {
         OrderDTO order = new OrderDTO();
         order.setId(UUID.randomUUID().toString());
 
-        PagedDTO<OrderDTO> pagedDTO = new PagedDTO<>();
-        pagedDTO.setList(List.of(order));
+        Page<OrderDTO> pagedDTO = new PageImpl<OrderDTO>(List.of(order));
 
 //        given(orderService.findAllOrders(any(Integer.class), any(Integer.class))).willReturn(pagedDTO);
         given(orderService.findAllOrders(anyInt(), anyInt())).willReturn(pagedDTO);
@@ -65,7 +65,7 @@ class OrderControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.length()", is(5)))
+                .andExpect(jsonPath("$.length()", is(11)))
                 .andReturn();
 
         ArgumentCaptor<Integer> pageNumberArgumentCaptor = ArgumentCaptor.forClass(Integer.class);

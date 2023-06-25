@@ -2,10 +2,8 @@ package io.factorialsystems.msscstoreorders.controller;
 
 import io.factorialsystems.msscstoreorders.dto.MessageDTO;
 import io.factorialsystems.msscstoreorders.dto.OrderDTO;
-import io.factorialsystems.msscstoreorders.dto.PagedDTO;
 import io.factorialsystems.msscstoreorders.exception.NotFoundException;
 import io.factorialsystems.msscstoreorders.service.OrderService;
-import io.factorialsystems.msscstoreorders.utils.Constants;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -16,6 +14,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,18 +36,8 @@ public class OrderController {
             @ApiResponse(responseCode = "400", description = "Error", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = MessageDTO.class))})
     })
     @Operation(summary = "Get All Orders", description = "Get a Pageful of Orders, default values PageNumber = 1, PageSize = 20")
-    public PagedDTO<OrderDTO> findAll(@RequestParam(value = "pageNumber", required = false) Integer pageNumber,
-                                      @RequestParam(value = "pageSize", required = false) Integer pageSize) {
-
-        if (pageNumber == null || pageNumber < 1) {
-            pageNumber = Constants.DEFAULT_PAGE_NUMBER;
-        } else {
-            pageNumber--;
-        }
-
-        if (pageSize == null || pageSize < 1) {
-            pageSize = Constants.DEFAULT_PAGE_SIZE;
-        }
+    public Page<OrderDTO> findAll(@RequestParam(value = "pageNumber", required = false) Integer pageNumber,
+                                  @RequestParam(value = "pageSize", required = false) Integer pageSize) {
 
         return orderService.findAllOrders(pageNumber, pageSize);
     }

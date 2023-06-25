@@ -1,24 +1,21 @@
 package io.factorialsystems.msscstoreorders.service;
 
 import io.factorialsystems.msscstoreorders.dto.OrderDTO;
-import io.factorialsystems.msscstoreorders.dto.PagedDTO;
 import io.factorialsystems.msscstoreorders.entity.Order;
 import io.factorialsystems.msscstoreorders.entity.OrderItem;
 import io.factorialsystems.msscstoreorders.exception.NotFoundException;
 import io.factorialsystems.msscstoreorders.mapper.OrderMapper;
 import io.factorialsystems.msscstoreorders.repository.OrderRepository;
 import io.factorialsystems.msscstoreorders.utils.JwtTokenWrapper;
+import io.factorialsystems.msscstoreorders.utils.PageRequestBuilder;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -51,9 +48,10 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public PagedDTO<OrderDTO> findAllOrders(Integer pageNumber, Integer pageSize) {
-        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by("orderDate").descending());
-        return createClientDto(orderRepository.findAll(pageable));
+    public Page<OrderDTO> findAllOrders(Integer pageNumber, Integer pageSize) {
+        Pageable pageable = PageRequestBuilder.buildWithSort(pageNumber, pageSize, "orderDate", true);
+        final Page<Order> orderPage = orderRepository.findAll(pageable);
+        return orderPage.map(orderMapper::toDtoFromEntity);
     }
 
     @Override
@@ -81,23 +79,5 @@ public class OrderServiceImpl implements OrderService {
 
         Order savedOrder = orderRepository.save(order);
         return Optional.of(orderMapper.toDtoFromEntity(savedOrder));
-    }
-
-    private PagedDTO<OrderDTO> createClientDto(Page<Order> orders) {
-        PagedDTO<OrderDTO> pagedDto = new PagedDTO<>();
-
-        pagedDto.setTotalSize((int)orders.getTotalElements());
-        pagedDto.setPageNumber(orders.getNumber());
-        pagedDto.setPageSize(orders.getSize());
-        pagedDto.setPages(orders.getTotalPages());
-
-        List<Order> o = orders.stream().toList();
-
-        List<OrderDTO> list = orders.stream()
-                .map(orderMapper::toDtoFromEntity)
-                .toList();
-
-        pagedDto.setList(list);
-        return pagedDto;
     }
 }

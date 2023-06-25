@@ -2,7 +2,6 @@ package io.factorialsystems.msscstoreorders.controller;
 
 import io.factorialsystems.msscstoreorders.dto.OrderDTO;
 import io.factorialsystems.msscstoreorders.dto.OrderItemDTO;
-import io.factorialsystems.msscstoreorders.dto.PagedDTO;
 import io.factorialsystems.msscstoreorders.entity.OrderStatus;
 import io.factorialsystems.msscstoreorders.service.OrderService;
 import jakarta.transaction.Transactional;
@@ -10,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
 import org.springframework.test.annotation.Rollback;
 
 import java.math.BigDecimal;
@@ -28,8 +28,8 @@ class OrderControllerIT {
 
     @Test
     void findAll() {
-        PagedDTO<OrderDTO> orders = orderService.findAllOrders(0, 100);
-        assertThat(orders.getList().size()).isGreaterThan(4);
+        Page<OrderDTO> orders = orderService.findAllOrders(0, 100);
+        assertThat(orders.stream().count()).isGreaterThan(4);
     }
 
     @Test
