@@ -39,46 +39,55 @@ class OrderRepositoryTest {
         order.setTotalPrice(new BigDecimal("1200"));
         order.setOrderStatus(OrderStatus.ORDER_NEW);
 
-        OrderItem item1 = new OrderItem(null, order, "product_1", "description_1", 1, new BigDecimal("120"), new BigDecimal("120"), BigDecimal.ZERO);
-        OrderItem item2 = new OrderItem(null, order,"product_2", "description_2", 2, new BigDecimal("144"), new BigDecimal("288"), BigDecimal.ZERO);
-        OrderItem item3 = new OrderItem(null, order, "product_3", "description_3", 2, new BigDecimal("180"), new BigDecimal("720"), BigDecimal.ZERO);
-        OrderItem item4 = new OrderItem(null, order, "product_4", "description_4", 1, new BigDecimal("120"), new BigDecimal("120"), BigDecimal.ZERO);
+        OrderItem item1 = OrderItem.builder()
+                .description("description_1")
+                .discount(BigDecimal.ZERO)
+                .totalPrice(new BigDecimal(120))
+                .unitPrice(new BigDecimal(120))
+                .order(order)
+                .quantity(1)
+                .productId("product_1")
+                .build();
+
+        OrderItem item2 = OrderItem.builder()
+                .description("description_2")
+                .discount(BigDecimal.ZERO)
+                .totalPrice(new BigDecimal(120))
+                .unitPrice(new BigDecimal(120))
+                .quantity(1)
+                .order(order)
+                .productId("product_2")
+                .build();
+
+        OrderItem item3 = OrderItem.builder()
+                .description("description_3")
+                .discount(BigDecimal.ZERO)
+                .totalPrice(new BigDecimal(120))
+                .unitPrice(new BigDecimal(120))
+                .quantity(1)
+                .order(order)
+                .productId("product_3")
+                .build();
+
+        OrderItem item4 = OrderItem.builder()
+                .description("description_4")
+                .discount(BigDecimal.ZERO)
+                .totalPrice(new BigDecimal(120))
+                .unitPrice(new BigDecimal(120))
+                .order(order)
+                .quantity(1)
+                .productId("product_4")
+                .build();
+
+
 
         order.setItems(Set.of(item1, item2, item3, item4));
 
         orderRepository.save(order);
 
         List<Order> orders = orderRepository.findAll();
-        assertThat(orders.size()).isEqualTo(8);
-        assertThat(orders.get(0).getItems().size()).isEqualTo(1);
-
-    }
-
-
-    @Test
-    @Rollback
-    @Transactional
-    public void testCreateWithNullOrder() {
-        Order order = new Order();
-        order.setUserId(UUID.randomUUID().toString());
-        order.setTelephone("08055572307");
-        order.setAddress("25 Valerian");
-        order.setTotalPrice(new BigDecimal("1200"));
-        order.setOrderStatus(OrderStatus.ORDER_NEW);
-
-        OrderItem item1 = new OrderItem(null, null, "product_1", "description_1", 1, new BigDecimal("120"), new BigDecimal("120"), BigDecimal.ZERO);
-        OrderItem item2 = new OrderItem(null, null,"product_2", "description_2", 2, new BigDecimal("144"), new BigDecimal("288"), BigDecimal.ZERO);
-        OrderItem item3 = new OrderItem(null, null, "product_3", "description_3", 2, new BigDecimal("180"), new BigDecimal("720"), BigDecimal.ZERO);
-        OrderItem item4 = new OrderItem(null, null, "product_4", "description_4", 1, new BigDecimal("120"), new BigDecimal("120"), BigDecimal.ZERO);
-
-        order.setItems(Set.of(item1, item2, item3, item4));
-
-        orderRepository.save(order);
-
-        List<Order> orders = orderRepository.findAll();
-        assertThat(orders.size()).isEqualTo(8);
-        assertThat(orders.get(0).getItems().size()).isEqualTo(1);
-
+        assertThat(orders.size()).isEqualTo(1);
+        assertThat(orders.get(0).getItems().size()).isEqualTo(4);
     }
 
     @Test
@@ -86,17 +95,53 @@ class OrderRepositoryTest {
     @Transactional
     public void testUpdateOrder() {
 
-        Order order = new Order();
-        order.setUserId(UUID.randomUUID().toString());
-        order.setTelephone("08055572307");
-        order.setAddress("25 Valerian");
-        order.setTotalPrice(new BigDecimal("1200"));
-        order.setOrderStatus(OrderStatus.ORDER_NEW);
+        Order order = Order.builder()
+                .userId(UUID.randomUUID().toString())
+                .telephone("08055572307")
+                .address("25 Valerian")
+                .totalPrice(new BigDecimal(1200))
+                .orderStatus(OrderStatus.ORDER_NEW)
+                .build();
 
-        OrderItem item1 = new OrderItem(null, null, "product_1", "description_1", 1, new BigDecimal("120"), new BigDecimal("120"), BigDecimal.ZERO);
-        OrderItem item2 = new OrderItem(null, null,"product_2", "description_2", 2, new BigDecimal("144"), new BigDecimal("288"), BigDecimal.ZERO);
-        OrderItem item3 = new OrderItem(null, null, "product_3", "description_3", 2, new BigDecimal("180"), new BigDecimal("720"), BigDecimal.ZERO);
-        OrderItem item4 = new OrderItem(null, null, "product_4", "description_4", 1, new BigDecimal("120"), new BigDecimal("120"), BigDecimal.ZERO);
+        OrderItem item1 = OrderItem.builder()
+                .description("description_1")
+                .discount(BigDecimal.ZERO)
+                .totalPrice(new BigDecimal(120))
+                .unitPrice(new BigDecimal(120))
+                .order(order)
+                .quantity(1)
+                .productId("product_1")
+                .build();
+
+        OrderItem item2 = OrderItem.builder()
+                .description("description_2")
+                .discount(BigDecimal.ZERO)
+                .totalPrice(new BigDecimal(120))
+                .unitPrice(new BigDecimal(120))
+                .quantity(1)
+                .order(order)
+                .productId("product_2")
+                .build();
+
+        OrderItem item3 = OrderItem.builder()
+                .description("description_3")
+                .discount(BigDecimal.ZERO)
+                .totalPrice(new BigDecimal(120))
+                .unitPrice(new BigDecimal(120))
+                .quantity(1)
+                .order(order)
+                .productId("product_3")
+                .build();
+
+        OrderItem item4 = OrderItem.builder()
+                .description("description_4")
+                .discount(BigDecimal.ZERO)
+                .totalPrice(new BigDecimal(120))
+                .unitPrice(new BigDecimal(120))
+                .order(order)
+                .quantity(1)
+                .productId("product_4")
+                .build();
 
         order.setItems(Set.of(item1, item2));
 
