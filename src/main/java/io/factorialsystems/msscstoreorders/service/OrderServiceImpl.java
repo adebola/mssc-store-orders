@@ -69,7 +69,8 @@ public class OrderServiceImpl implements OrderService {
                 .map(OrderItem::getTotalPrice)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        final Set<OrderItem> items = order.getItems().stream()
+        final Set<OrderItem> items = order.getItems()
+                .stream()
                 .peek(o -> o.setOrder(order))
                 .collect(Collectors.toSet());
 

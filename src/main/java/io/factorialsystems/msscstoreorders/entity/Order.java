@@ -3,8 +3,7 @@ package io.factorialsystems.msscstoreorders.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
@@ -14,14 +13,17 @@ import org.hibernate.type.SqlTypes;
 
 import java.math.BigDecimal;
 import java.time.Instant;
-import java.util.LinkedHashSet;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
+@Builder
 @Getter
 @Setter
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "`order`")
 public class Order {
     @Id
@@ -59,8 +61,9 @@ public class Order {
     @Column(name = "update_date")
     private Instant updateDate;
 
+    @Builder.Default
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<OrderItem> items = new LinkedHashSet<>();
+    private Set<OrderItem> items = new HashSet<>();
 
     @Version
     @Column(name = "version")
